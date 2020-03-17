@@ -1,19 +1,15 @@
 import React from "react"
-import { useExample } from "../hooks"
+import { useGoing } from "../hooks"
+import { BrowserRouter as Router, Route } from "react-router-dom"
+
+import Going from "./Going"
+import NotGoing from "./Notgoing"
 
 export default props => {
-  const { person } = useExample()
-
   return (
-    <div className="container">
-      <img className="thumb" src={person.picture} />
-      <p>
-        Name: {person.fname} {person.lname}
-      </p>
-      <p>Phone: {person.phone} </p>
-      <p>Email: {person.email}</p>
-      <button className="notgoing">Not Going</button>
-      <button className="going">Going</button>
-    </div>
+    <Router>
+      <Route path="/going" component={Going} />
+      <Route path="/notgoing" component={Notgoing} />
+    </Router>
   )
 }

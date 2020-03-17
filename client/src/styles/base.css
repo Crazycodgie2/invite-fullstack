@@ -42,7 +42,8 @@ code {
   height: 50px;
   font-size: 16px;
   right: 100px;
-  top: 200px;
+  top: 100px;
+  color: white;
   background: red;
 }
 
@@ -54,7 +55,8 @@ code {
   height: 50px;
   font-size: 16px;
   left: 100px;
-  top: 200px;
+  top: 100px;
+  color: white;
   background: rgb(25, 202, 2);
 }
 
@@ -62,4 +64,5 @@ code {
   width: 100px;
   height: 100px;
   border-radius: 100px;
+  margin: 20px;
 }
