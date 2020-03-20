@@ -2,57 +2,96 @@ const express = require("express")
 const router = express.Router()
 const axios = require("axios")
 
-let randomUser = []
-let usersGoing = []
-let usersNotGoing = []
-let userid = 1
+const data = {
+  going: [],
+  notgoing: []
+}
 
-router.get("/randomUser", (req, res, next) => {
-  axios.get("https://randomuser.me/api/?nat=us&randomapi&lego").then(resp => {
+router.get("/", (req, res, next) => {
+  axios.get("https://randomuser.me/api?results=1").then(resp => {
     const obj = resp.data.results[0]
 
     const user = {
-      name: `${obj.name.first} ${obj.name.last}`,
-      phone: obj.phone,
-      email: obj.email,
-      img: obj.picture.thumbnail,
-      id: userid++
+      name: results[0].name.first + " " + results[0].name.last,
+      img: results[0].picture.large,
+      phone: results[0].phone,
+      email: results[0].email
     }
 
-    randomUser.push({ ...user })
     res.json({
-      ...user
+      user,
+      goingCount: data.going.length,
+      notGoingCount: data.notgoing.length
     })
   })
 })
 
-router.post("/going", (req, res, next) => {
-  usersGoing.push(req.body.user)
-  res.json({
-    ...usersGoing
-  })
-})
-
-router.post("/notgoing", (req, res, next) => {
-  usersNotGoing.push(req.body.user)
-  res.json({
-    ...usersNotGoing
-  })
-})
-
-router.get("/randomuser/:id", (req, res, next) => {
-  const user = randomUser.find(user => user.id == req.params.id)
-  res.json(user)
-})
-
 router.get("/going", (req, res, next) => {
-  const user = usersGoing
-  res.json(user)
+  res.json(data.going)
 })
 
 router.get("/notgoing", (req, res, next) => {
-  const user = usersNotGoing
-  res.json(user)
+  res.json(data.notgoing)
+})
+
+router.get("/mark-invitee", (req, res, next) => {
+  const going = req.body.going
+
+  if (going) {
+    data.going.push(req.body.user)
+  } else {
+    data.notgoing.push(req.body.user)
+  }
+
+  res.json({
+    status: going ? "going" : "notgoing",
+    user
+  })
 })
 
 module.exports = router
+
+// router.get("/", (req, res, next) => {
+//   axios.get("https://randomuser.me/api?results=1").then(resp => {
+//     const obj = resp.data.results[0]
+
+//     const user = {
+//       name: results[0].name.first + " " + results[0].name.last,
+//       img: results[0].picture.large,
+//       phone: results[0].phone,
+//       email: results[0].email
+//     }
+
+//     res.json({
+//       user,
+//       goingCount: data.going.length,
+//       notGoingCount: data.notgoing.length
+//     })
+//   })
+// })
+
+// router.post("/going", (req, res, next) => {
+//   usersGoing.push(req.body.user)
+//   res.json({
+//     ...usersGoing
+//   })
+// })
+
+// router.post("/notgoing", (req, res, next) => {
+//   usersNotGoing.push(req.body.user)
+//   res.json({
+//     ...usersNotGoing
+//   })
+// })
+
+// router.get("/going", (req, res, next) => {
+//   const user = usersGoing
+//   res.json(user)
+// })
+
+// router.get("/notgoing", (req, res, next) => {
+//   const user = usersNotGoing
+//   res.json(user)
+// })
+
+// module.exports = router

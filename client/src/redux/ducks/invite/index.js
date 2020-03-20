@@ -1,15 +1,14 @@
-import { useEffect } from "react"
-import { useSelector, useDispatch } from "react-redux"
 import axios from "axios"
+import { useSelector, useDispatch } from "react-redux"
 
 const GET_GOING = "invite/GET_GOING"
 const GET_NOTGOING = "invite/GET_NOTGOING"
 const GET_USER = "invite/GET_USER"
 
 const initialState = {
-  user: {},
   going: [],
   notgoing: [],
+  user: {},
   goingCount: 0,
   notGoingCount: 0
 }
@@ -21,7 +20,12 @@ export default (state = initialState, action) => {
     case GET_NOTGOING:
       return { ...state, notgoing: action.payload }
     case GET_USER:
-      return { ...state, user: action.payload }
+      return {
+        ...state,
+        user: action.payload.user,
+        goingCount: action.payload.goingCount,
+        notGoingCount: action.payload.notGoingCount
+      }
     default:
       return state
   }
@@ -51,12 +55,12 @@ function getNotGoing() {
 
 function getUser() {
   return dispatch => {
-    axios.get("/api/user").then(resp => {
+    axios.get("/api/").then(resp => {
       dispatch({
         type: GET_USER,
         payload: {
-          goingCount: resp.data.GoingCount,
-          notGoingCount: resp.data.NotGoingCount,
+          goingCount: resp.data.goingCount,
+          notGoingCount: resp.data.notGoingCount,
           user: resp.data.user
         }
       })
@@ -64,32 +68,33 @@ function getUser() {
   }
 }
 
-function getRandom() {
+function markInvitee(user, going) {
   return dispatch => {
-    axios.get("/api/random").then(resp => {
-      const data = resp.data
-      dispatch({
-        type: GET_GOING,
-        payload: data
-      })
+    axios.post("/api/mark-invitee", { user, going }).then(resp => {
+      dispatch(getUser())
     })
   }
 }
 
-export function addGoing(text) {
-  return dispatch => {
-    axios.post("/Going", { text, status: "active" }).then(resp => {
-      dispatch(getRandom())
-    })
-  }
-}
-
-export function useGoing() {
+export function useInvite() {
   const dispatch = useDispatch()
-  const person = useSelector(appState => appState.goingState.user)
-  const get = () => dispatch(getRandom())
-  useEffect(() => {
-    get()
-  }, [])
-  return { person, get }
+  const going = useSelector(appState => appState.inviteState.going)
+  const notgoing = useSelector(appState => appState.inviteState.notgoing)
+  const fetchGoing = () => dispatch(getGoing())
+  const fetchNotGoing = () => dispatch(getNotGoing())
+  const fetchUser = () => dispatch(getUser())
+  const goingCount = useSelector(appState => appState.inviteState.goingCount)
+  const notGoingCount = useSelector(
+    appState => appState.inviteState.notgoingCount
+  )
+
+  return {
+    going,
+    notgoing,
+    fetchGoing,
+    fetchNotGoing,
+    fetchUser,
+    goingCount,
+    notGoingCount
+  }
 }

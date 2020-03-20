@@ -1,3 +1,4 @@
+import React from "react"
 import { useInvite } from "../hooks"
 
 export default props => {
@@ -18,8 +19,8 @@ export default props => {
       <p>{user.phone}</p>
       <p>{user.email}</p>
       <div>
-        <button onClick={() => markUser(true, user)}>Going</button>
-        <button onClick={() => markUser(false, user)}>Going</button>
+        <button onClick={() => markUser(user, true)}>Going</button>
+        <button onClick={() => markUser(user, false)}>Going</button>
       </div>
     </div>
   )

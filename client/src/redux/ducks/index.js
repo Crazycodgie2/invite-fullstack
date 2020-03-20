@@ -1,1 +1,1 @@
-export { default as goingState } from "./example"
+export { default as inviteState } from "./invite"

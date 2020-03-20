@@ -1,1 +1,1 @@
-export { useGoing } from "../redux/ducks/invite"
+export { useInvite } from "../redux/ducks/invite"
